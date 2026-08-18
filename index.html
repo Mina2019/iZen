@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iZen · A small daily reset</title>
+  <style>
+    :root { --ink:#283a44; --paper:#f5f7f1; --sage:#b9d5c1; --deep:#496b65; --sun:#f3d9a3; --line:#d9e2dc; --muted:#63746f; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:radial-gradient(circle at 87% 10%,#f5e7c7 0 8%,transparent 25%),radial-gradient(circle at 10% 85%,#d6e7dc 0 8%,transparent 29%),var(--paper); font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { width:min(930px,calc(100% - 36px)); margin:auto; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:30px 0 24px; }
+    .brand { font:800 clamp(2.3rem,6vw,4rem)/.9 Georgia,serif; letter-spacing:-.11em; } .brand i { color:#7da78d; font-style:italic; }
+    .date { color:var(--muted); font-size:.76rem; font-weight:700; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) 240px; gap:32px; align-items:center; padding:clamp(26px,6vw,62px); border-radius:28px; color:#fff; background:linear-gradient(135deg,#557b73,#3e5e63); box-shadow:0 18px 48px #294b4425; }
+    h1 { max-width:560px; margin:0; font:700 clamp(2.1rem,5.2vw,4.5rem)/.95 Georgia,serif; letter-spacing:-.075em; } .hero p { max-width:510px; margin:18px 0 0; color:#e5efeb; line-height:1.6; }
+    .orb { width:190px; height:190px; margin:auto; border:1px solid #ffffff77; border-radius:50%; background:radial-gradient(circle at 35% 32%,#fff6dd 0 8%,#f2d39c 34%,#abcdb6 35% 55%,#668f80 56%); box-shadow:inset 0 0 35px #ffffff44,0 0 0 16px #ffffff0e; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:23px 0; } .card { padding:22px; border:1px solid var(--line); border-radius:18px; background:#ffffffb8; } .card h2 { margin:0 0 7px; font:700 1.25rem Georgia,serif; letter-spacing:-.035em; } .card p { margin:0 0 17px; color:var(--muted); font-size:.8rem; line-height:1.5; }
+    .moods { display:flex; justify-content:space-between; gap:5px; } .mood { width:42px; height:42px; border:1px solid transparent; border-radius:50%; color:#526a61; background:#eff5ed; cursor:pointer; font-size:1.15rem; } .mood.active { border-color:#517b6b; background:var(--sage); transform:translateY(-2px); }
+    .timer { text-align:center; } .breath { width:110px; height:110px; display:grid; place-items:center; margin:10px auto 16px; border-radius:50%; color:#334d47; background:var(--sun); font:800 1.1rem Georgia,serif; transition:transform 4s ease-in-out,background 4s ease-in-out; } .breath.inhale { transform:scale(1.25); background:#c5e0ca; } button { min-height:40px; padding:0 14px; border:0; border-radius:8px; color:#fff; background:var(--deep); cursor:pointer; font-size:.78rem; font-weight:800; } button.secondary { color:#526961; background:#e6eee7; }
+    .prompt { min-height:65px; color:#49635c; font:italic 1rem/1.5 Georgia,serif; } textarea { width:100%; min-height:130px; padding:13px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:#fffdf9; font:400 .9rem/1.55 system-ui,sans-serif; resize:vertical; } .journal-actions { display:flex; gap:10px; align-items:center; margin-top:11px; } .saved { color:#688072; font-size:.75rem; font-weight:700; }
+    .kindness { margin:23px 0 52px; padding:25px; border-radius:18px; color:#3c5f50; background:#dfeee1; } .kindness strong { display:block; margin-bottom:6px; font:700 1.2rem Georgia,serif; } .kindness span { font-size:.85rem; line-height:1.5; }
+    footer { padding:0 0 36px; color:#81908b; font-size:.73rem; } @media(max-width:700px) { .hero { grid-template-columns:1fr; } .orb { width:130px;height:130px; } .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><div class="brand"><i>i</i>Zen</div><div id="date" class="date"></div></header>
+    <section class="hero"><div><h1>A small place to come back to yourself.</h1><p>Take one quiet minute. Notice how you feel, breathe slowly, and leave a few words for later.</p></div><div class="orb" aria-hidden="true"></div></section>
+    <section class="grid">
+      <article class="card"><h2>How are you?</h2><p>Choose the closest feeling. There is no right answer.</p><div class="moods" aria-label="Mood check-in"><button class="mood" data-mood="Drained" title="Drained">☁</button><button class="mood" data-mood="Low" title="Low">◔</button><button class="mood" data-mood="Okay" title="Okay">●</button><button class="mood" data-mood="Good" title="Good">☀</button><button class="mood" data-mood="Bright" title="Bright">✦</button></div><p id="mood-status" style="margin-top:15px"></p></article>
+      <article class="card timer"><h2>One slow minute</h2><p id="breath-note">Press start, then follow the circle.</p><div id="breath" class="breath">Ready</div><button id="breath-button" type="button">Start breathing</button></article>
+      <article class="card"><h2>One gentle thought</h2><p>Try a different thought if you need one.</p><div id="prompt" class="prompt">You do not need to solve everything today.</div><button id="prompt-button" class="secondary" type="button">Another thought</button></article>
+    </section>
+    <section class="card"><h2>Leave yourself a note</h2><p>What do you need, notice, or want to remember?</p><textarea id="journal" placeholder="A few honest words are enough."></textarea><div class="journal-actions"><button id="save" type="button">Save today’s note</button><span id="saved" class="saved"></span></div></section>
+    <section class="kindness"><strong>Today’s tiny reset</strong><span>Drink water, open a window, stretch your shoulders, or simply stop for one minute. Small care still counts.</span></section>
+    <footer>iZen is a personal reflection tool, not medical or mental-health treatment. If you feel unsafe or need urgent help, contact local emergency or crisis support.</footer>
+  </div>
+  <script>
+    const today = new Date(); document.getElementById('date').textContent = today.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+    const key = `izen-${today.toISOString().slice(0,10)}`; const savedData = JSON.parse(localStorage.getItem(key) || '{}');
+    const journal = document.getElementById('journal'); journal.value = savedData.note || '';
+    const moodStatus = document.getElementById('mood-status');
+    document.querySelectorAll('.mood').forEach(button => { if(button.dataset.mood===savedData.mood){button.classList.add('active');moodStatus.textContent=`Today: ${savedData.mood}`;} button.addEventListener('click',()=>{document.querySelectorAll('.mood').forEach(item=>item.classList.remove('active'));button.classList.add('active');const data=JSON.parse(localStorage.getItem(key)||'{}');data.mood=button.dataset.mood;localStorage.setItem(key,JSON.stringify(data));moodStatus.textContent=`Today: ${button.dataset.mood}`;}); });
+    document.getElementById('save').addEventListener('click',()=>{const data=JSON.parse(localStorage.getItem(key)||'{}');data.note=journal.value;localStorage.setItem(key,JSON.stringify(data));document.getElementById('saved').textContent='Saved in this browser.';});
+    const thoughts=['You do not need to solve everything today.','A slower pace can still be progress.','You are allowed to begin again, gently.','One small completed thing is enough for now.','Rest is part of the work, too.']; let thought=0; document.getElementById('prompt-button').addEventListener('click',()=>{thought=(thought+1)%thoughts.length;document.getElementById('prompt').textContent=thoughts[thought];});
+    const breath=document.getElementById('breath'),note=document.getElementById('breath-note'),button=document.getElementById('breath-button'); let running=false,interval; button.addEventListener('click',()=>{if(running){clearInterval(interval);running=false;breath.classList.remove('inhale');breath.textContent='Ready';note.textContent='Paused. Come back whenever you want.';button.textContent='Start breathing';return;}running=true;let inhale=true;const step=()=>{breath.classList.toggle('inhale',inhale);breath.textContent=inhale?'Breathe in':'Breathe out';note.textContent=inhale?'Slowly in…':'Slowly out…';inhale=!inhale;};step();interval=setInterval(step,4000);button.textContent='Pause';});
+  </script>
+</body>
+</html>
